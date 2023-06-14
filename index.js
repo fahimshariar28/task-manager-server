@@ -85,6 +85,19 @@ async function run() {
       res.send(result);
     });
 
+    // Make tasks complete
+    app.patch("/completeTask", verifyJWT, async (req, res) => {
+      const id = req.query.id;
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: {
+          status: "completed",
+        },
+      };
+      const result = await taskCollection.updateOne(query, update);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
