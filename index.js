@@ -45,6 +45,7 @@ async function run() {
     // await client.connect();
 
     const taskCollection = client.db("taskManager").collection("tasks");
+    const usersCollection = client.db("taskManager").collection("users");
 
     app.post("/jwt", (req, res) => {
       const user = req.body;
@@ -53,6 +54,20 @@ async function run() {
       });
 
       res.send({ token });
+    });
+
+    // Add users to the database
+    app.post("/adduser", async (req, res) => {
+      const user = req.body;
+      const query = { email: user.email };
+      const existingUser = await usersCollection.findOne(query);
+
+      if (existingUser) {
+        return res.send({ message: "user already exists" });
+      }
+
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
