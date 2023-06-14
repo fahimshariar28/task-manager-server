@@ -70,6 +70,13 @@ async function run() {
       res.send(result);
     });
 
+    // Add tasks to the database
+    app.post("/addTask", verifyJWT, async (req, res) => {
+      const task = req.body;
+      const result = await taskCollection.insertOne(task);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
